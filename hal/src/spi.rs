@@ -442,7 +442,6 @@ pub struct Spi<SPI, SCK, MISO, MOSI> {
 
 /// SPI 3 (Sub-GHz) driver.
 #[derive(Debug)]
-#[doc(hidden)]
 pub struct Spi3<MISO, MOSI> {
     spi: pac::SPI3,
     miso: MISO,
@@ -1117,8 +1116,9 @@ macro_rules! impl_new_miso_simplex_dma {
 impl_new_miso_simplex_dma!(1);
 impl_new_miso_simplex_dma!(2);
 
+#[allow(missing_docs)]
 impl Spi3<SgMiso, SgMosi> {
-    pub(crate) fn new(spi: pac::SPI3, div: BaudRate, rcc: &mut pac::RCC) -> Self {
+    pub fn new(spi: pac::SPI3, div: BaudRate, rcc: &mut pac::RCC) -> Self {
         Self::enable_clock(rcc);
         unsafe { Self::pulse_reset(rcc) };
 
@@ -1141,7 +1141,7 @@ impl Spi3<SgMiso, SgMosi> {
         }
     }
 
-    pub(crate) unsafe fn steal() -> Self {
+    pub unsafe fn steal() -> Self {
         Self {
             spi: pac::Peripherals::steal().SPI3,
             mosi: SgMosi::new(),
@@ -1150,14 +1150,16 @@ impl Spi3<SgMiso, SgMosi> {
     }
 }
 
+#[allow(missing_docs)] // struct is hidden
 impl<MISO, MOSI> Spi3<MISO, MOSI> {
-    pub(crate) fn free(self) -> (pac::SPI3, MISO, MOSI) {
+    pub fn free(self) -> (pac::SPI3, MISO, MOSI) {
         (self.spi, self.miso, self.mosi)
     }
 }
 
+#[allow(missing_docs)] // struct is hidden
 impl<MISODMA: DmaCh, MOSIDMA: DmaCh> Spi3<MISODMA, MOSIDMA> {
-    pub(crate) fn new_with_dma(
+    pub fn new_with_dma(
         spi: pac::SPI3,
         mut miso_dma: MISODMA,
         mut mosi_dma: MOSIDMA,
@@ -1198,7 +1200,7 @@ impl<MISODMA: DmaCh, MOSIDMA: DmaCh> Spi3<MISODMA, MOSIDMA> {
         }
     }
 
-    pub(crate) unsafe fn steal_with_dma(miso_dma: MISODMA, mosi_dma: MOSIDMA) -> Self {
+    pub unsafe fn steal_with_dma(miso_dma: MISODMA, mosi_dma: MOSIDMA) -> Self {
         Self {
             spi: pac::Peripherals::steal().SPI3,
             miso: miso_dma,
